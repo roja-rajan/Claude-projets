@@ -4,77 +4,194 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome</title>
-    <!-- Bootstrap CSS -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔐</text></svg>">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+
         body {
-            background-color: #f0f2f5;
+            background: linear-gradient(135deg, #4A90E2 0%, #764ba2 40%, #9b59b6 70%, #6c3483 100%);
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
+            overflow: hidden;
         }
+
+        /* ══ 20 Bubbles floating UPWARD ══ */
+        .bubble-bg {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .bubble-bg span {
+            position: absolute;
+            bottom: -80px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.22);
+            animation: floatUp linear infinite;
+            pointer-events: auto;                        /* enable hover */
+            transition: box-shadow 0.35s ease;
+        }
+        .bubble-bg span:hover {
+            box-shadow:
+                0 0 0  5px rgba(255,255,255,0.28),
+                0 0 0 11px rgba(255,255,255,0.14),
+                0 0 0 18px rgba(255,255,255,0.06);
+        }
+        .bubble-bg span:nth-child(1)  { left:  3%; width:16px;  height:16px;  animation-duration: 8s;    animation-delay: 0s;   }
+        .bubble-bg span:nth-child(2)  { left:  9%; width:28px;  height:28px;  animation-duration: 12s;   animation-delay: 1s;   }
+        .bubble-bg span:nth-child(3)  { left: 16%; width:10px;  height:10px;  animation-duration: 7s;    animation-delay: 2.5s; }
+        .bubble-bg span:nth-child(4)  { left: 22%; width:36px;  height:36px;  animation-duration: 14s;   animation-delay: 0.5s; }
+        .bubble-bg span:nth-child(5)  { left: 29%; width:18px;  height:18px;  animation-duration: 9s;    animation-delay: 3.5s; }
+        .bubble-bg span:nth-child(6)  { left: 36%; width:12px;  height:12px;  animation-duration: 6.5s;  animation-delay: 1.5s; }
+        .bubble-bg span:nth-child(7)  { left: 42%; width:44px;  height:44px;  animation-duration: 16s;   animation-delay: 0s;   }
+        .bubble-bg span:nth-child(8)  { left: 50%; width:20px;  height:20px;  animation-duration: 10s;   animation-delay: 2s;   }
+        .bubble-bg span:nth-child(9)  { left: 56%; width:14px;  height:14px;  animation-duration: 7.5s;  animation-delay: 4s;   }
+        .bubble-bg span:nth-child(10) { left: 63%; width:30px;  height:30px;  animation-duration: 13s;   animation-delay: 1s;   }
+        .bubble-bg span:nth-child(11) { left: 69%; width: 8px;  height: 8px;  animation-duration: 6s;    animation-delay: 3s;   }
+        .bubble-bg span:nth-child(12) { left: 75%; width:22px;  height:22px;  animation-duration: 11s;   animation-delay: 0.5s; }
+        .bubble-bg span:nth-child(13) { left: 81%; width:40px;  height:40px;  animation-duration: 15s;   animation-delay: 2s;   }
+        .bubble-bg span:nth-child(14) { left: 87%; width:12px;  height:12px;  animation-duration: 8.5s;  animation-delay: 1.5s; }
+        .bubble-bg span:nth-child(15) { left: 93%; width:26px;  height:26px;  animation-duration: 10s;   animation-delay: 3.5s; }
+        .bubble-bg span:nth-child(16) { left: 13%; width:50px;  height:50px;  animation-duration: 18s;   animation-delay: 0s;   }
+        .bubble-bg span:nth-child(17) { left: 47%; width: 8px;  height: 8px;  animation-duration: 5.5s;  animation-delay: 2.5s; }
+        .bubble-bg span:nth-child(18) { left: 60%; width:34px;  height:34px;  animation-duration: 13s;   animation-delay: 4.5s; }
+        .bubble-bg span:nth-child(19) { left: 78%; width:16px;  height:16px;  animation-duration: 9.5s;  animation-delay: 1s;   }
+        .bubble-bg span:nth-child(20) { left: 33%; width:24px;  height:24px;  animation-duration: 11.5s; animation-delay: 3s;   }
+
+        @keyframes floatUp {
+            0%   { transform: translateY(0)      scale(1);    opacity: 0;    }
+            8%   { opacity: 0.9; }
+            90%  { opacity: 0.4; }
+            100% { transform: translateY(-108vh) scale(0.88); opacity: 0;    }
+        }
+
+        /* ══ CIRCLE CARD ══ */
         .welcome-card {
-            width: 100%;
-            max-width: 480px;
-            padding: 50px 40px;
-            background: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 1;
+            width: 480px;
+            height: 480px;
+            border-radius: 50%;           /* perfect circle */
+            overflow: hidden;             /* clip ripples inside */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            background: rgba(255,255,255,0.18);
+            backdrop-filter: blur(28px);
+            -webkit-backdrop-filter: blur(28px);
+            border: 1.5px solid rgba(255,255,255,0.45);
+
+            box-shadow:
+                inset 0  3px  8px rgba(255,255,255,0.50),
+                inset 0 -3px  6px rgba(0,0,0,0.12),
+                0 10px 30px rgba(74, 60,130,0.38),
+                0 28px 55px rgba(50, 30,100,0.32),
+                0 55px 35px -22px rgba(30,10,60,0.30);
+        }
+
+        /* Top gloss shine */
+        .welcome-card::before {
+            content: '';
+            position: absolute;
+            top: 6%;
+            left: 18%;
+            width: 64%;
+            height: 38%;
+            background: radial-gradient(ellipse at 50% 0%,
+                rgba(255,255,255,0.40) 0%,
+                rgba(255,255,255,0.00) 100%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* ══ Inner content ══ */
+        .card-content {
+            position: relative;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 300px;
             text-align: center;
         }
         .welcome-icon {
-            font-size: 60px;
-            margin-bottom: 16px;
+            font-size: 52px;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 3px 6px rgba(0,0,0,0.25));
+        }
+        .badge-user {
+            background: rgba(255,255,255,0.28);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.45);
+            padding: 5px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            margin-bottom: 12px;
+            backdrop-filter: blur(6px);
         }
         .welcome-card h2 {
             font-weight: 700;
-            color: #333;
-            margin-bottom: 8px;
+            color: #fff;
+            margin-bottom: 6px;
+            font-size: 22px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.25);
         }
         .welcome-card p {
-            color: #666;
-            font-size: 16px;
-            margin-bottom: 30px;
+            color: rgba(255,255,255,0.85);
+            font-size: 13px;
+            margin-bottom: 20px;
+            line-height: 1.5;
         }
         .btn-logout {
-            padding: 10px 30px;
-            font-size: 15px;
-            background-color: #e74c3c;
-            border: none;
-            border-radius: 8px;
+            padding: 9px 30px;
+            font-size: 14px;
+            background: rgba(231,76,60,0.85);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 10px;
             color: white;
             font-weight: 600;
             text-decoration: none;
+            backdrop-filter: blur(6px);
+            display: inline-block;
+            transition: background 0.25s;
         }
         .btn-logout:hover {
-            background-color: #c0392b;
+            background: rgba(192,57,43,0.95);
             color: white;
-        }
-        .badge-user {
-            background-color: #4A90E2;
-            color: white;
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 14px;
-            display: inline-block;
-            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
-    <div class="welcome-card">
-        <div class="welcome-icon">🎉</div>
-        <div class="badge-user">
-            Logged in as: <strong th:text="${username}">User</strong>
-        </div>
-        <h2>Welcome!</h2>
-        <p>You have successfully logged in. <br> Hope you have a great day!</p>
-        <a href="/logout" class="btn-logout">Logout</a>
+
+    <!-- 20 upward bubbles -->
+    <div class="bubble-bg">
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span>
     </div>
 
-    <!-- Bootstrap JS -->
+    <!-- Circle welcome card -->
+    <div class="welcome-card">
+        <div class="card-content">
+            <div class="welcome-icon">🎉</div>
+            <div class="badge-user">
+                Logged in as: <strong th:text="${username}">User</strong>
+            </div>
+            <h2>Welcome!</h2>
+            <p>You have successfully logged in.<br>Hope you have a great day!</p>
+            <a href="/logout" class="btn-logout">Logout</a>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
