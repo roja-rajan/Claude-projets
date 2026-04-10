@@ -21,4 +21,18 @@ public class AuthService {
         // Check if username exists and password matches
         return users.containsKey(username) && users.get(username).equals(password);
     }
+
+    public boolean register(String username, String password) {
+        // If username already exists, return false
+        if (users.containsKey(username)) {
+            return false;
+        }
+        // Add new user to the map
+        users.put(username, password);
+        return true;
+    }
+
+    public boolean usernameExists(String username) {
+        return users.containsKey(username);
+    }
 }

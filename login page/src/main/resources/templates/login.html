@@ -76,6 +76,11 @@
         <h2>Welcome Back!</h2>
         <p class="subtitle">Please sign in to your account</p>
 
+        <!-- Success Message (after signup) -->
+        <div th:if="${success}" class="alert alert-success" role="alert">
+            <span th:text="${success}"></span>
+        </div>
+
         <!-- Error Message -->
         <div th:if="${error}" class="alert alert-danger" role="alert">
             <span th:text="${error}"></span>
@@ -106,7 +111,7 @@
 
         <!-- No account yet line + Sign Up button -->
         <p class="text-center mt-3" style="font-size: 13px; color: #aaa;">No account yet!</p>
-        <button class="btn btn-signup w-100">Sign Up</button>
+        <a href="/signup" class="btn btn-signup w-100">Sign Up</a>
     </div>
 
     <!-- Bootstrap JS -->
