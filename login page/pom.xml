@@ -18,7 +18,7 @@
     <description>Spring Boot Login Page</description>
 
     <properties>
-        <java.version>17</java.version>
+        <java.version>22</java.version>
     </properties>
 
     <dependencies>
