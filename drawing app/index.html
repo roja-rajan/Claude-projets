@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Drawing Grid App</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #1a1a2e;
+      color: #eee;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px 20px;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 6px;
+      color: #e0e0ff;
+      letter-spacing: 1px;
+    }
+
+    p.subtitle {
+      color: #aaa;
+      margin-bottom: 30px;
+      font-size: 0.95rem;
+    }
+
+    .card {
+      background: #16213e;
+      border: 1px solid #2a2a5a;
+      border-radius: 12px;
+      padding: 28px 32px;
+      width: 100%;
+      max-width: 700px;
+      margin-bottom: 24px;
+    }
+
+    .card h2 {
+      font-size: 1rem;
+      color: #a0a8ff;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+    }
+
+    .upload-zone {
+      border: 2px dashed #3a3a7a;
+      border-radius: 10px;
+      padding: 40px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .upload-zone:hover, .upload-zone.drag-over {
+      border-color: #6060ff;
+      background: #1e1e50;
+    }
+
+    .upload-zone input[type="file"] { display: none; }
+
+    .upload-zone .icon { font-size: 3rem; margin-bottom: 10px; }
+    .upload-zone p { color: #888; font-size: 0.9rem; }
+    .upload-zone p strong { color: #a0a8ff; }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .control-group label {
+      display: block;
+      font-size: 0.85rem;
+      color: #a0a8ff;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .control-group input[type="range"] {
+      width: 100%;
+      accent-color: #6060ff;
+      cursor: pointer;
+    }
+
+    .control-group input[type="number"] {
+      width: 100%;
+      background: #0f0f2a;
+      border: 1px solid #3a3a7a;
+      border-radius: 6px;
+      color: #eee;
+      font-size: 1rem;
+      padding: 8px 12px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .control-group input[type="number"]:focus {
+      border-color: #6060ff;
+    }
+
+    .value-display {
+      font-size: 0.85rem;
+      color: #888;
+      margin-top: 4px;
+    }
+
+    .color-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .color-row label { font-size: 0.85rem; color: #a0a8ff; }
+    .color-row input[type="color"] {
+      width: 44px;
+      height: 36px;
+      border: 1px solid #3a3a7a;
+      border-radius: 6px;
+      background: transparent;
+      cursor: pointer;
+      padding: 2px;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 11px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      font-weight: 600;
+      transition: transform 0.1s, opacity 0.2s;
+    }
+
+    button:active { transform: scale(0.97); }
+    button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .btn-primary { background: #4a4aff; color: #fff; }
+    .btn-primary:hover:not(:disabled) { background: #5a5aff; }
+
+    .btn-secondary { background: #2a2a5a; color: #ccc; border: 1px solid #3a3a7a; }
+    .btn-secondary:hover:not(:disabled) { background: #3a3a7a; }
+
+    .btn-success { background: #28a745; color: #fff; }
+    .btn-success:hover:not(:disabled) { background: #34c457; }
+
+    .canvas-wrapper {
+      position: relative;
+      overflow: auto;
+      border-radius: 8px;
+      background: #0f0f2a;
+      border: 1px solid #2a2a5a;
+      max-height: 600px;
+      text-align: center;
+    }
+
+    #outputCanvas {
+      display: block;
+      max-width: 100%;
+    }
+
+    .hidden { display: none !important; }
+
+    #filename-display {
+      font-size: 0.85rem;
+      color: #6a9;
+      margin-top: 10px;
+    }
+
+    .grid-label-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .grid-label-toggle input[type="checkbox"] {
+      accent-color: #6060ff;
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    .grid-label-toggle label { font-size: 0.9rem; color: #ccc; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+<h1>Drawing Grid App</h1>
+<p class="subtitle">Convert your image to B&W, adjust contrast, and overlay a reference grid</p>
+
+<!-- Step 1: Upload -->
+<div class="card">
+  <h2>Step 1 — Upload Image</h2>
+  <div class="upload-zone" id="uploadZone">
+    <input type="file" id="fileInput" accept="image/*" />
+    <div class="icon">🖼️</div>
+    <p><strong>Click to upload</strong> or drag & drop</p>
+    <p>PNG, JPG, WEBP, BMP supported</p>
+  </div>
+  <div id="filename-display"></div>
+</div>
+
+<!-- Step 2: Adjustments -->
+<div class="card hidden" id="adjustCard">
+  <h2>Step 2 — Adjust</h2>
+  <div class="controls">
+    <div class="control-group">
+      <label>Contrast (<span id="contrastVal">150</span>%)</label>
+      <input type="range" id="contrastSlider" min="50" max="400" value="150" step="5" />
+      <div class="value-display">50% = low &nbsp;|&nbsp; 400% = extreme</div>
+    </div>
+    <div class="control-group">
+      <label>Brightness (<span id="brightnessVal">100</span>%)</label>
+      <input type="range" id="brightnessSlider" min="30" max="300" value="100" step="5" />
+    </div>
+    <div class="control-group">
+      <label>Grid Columns</label>
+      <input type="number" id="gridCols" min="1" max="100" value="10" placeholder="e.g. 10" />
+    </div>
+    <div class="control-group">
+      <label>Grid Rows</label>
+      <input type="number" id="gridRows" min="1" max="100" value="10" placeholder="e.g. 10" />
+    </div>
+  </div>
+
+  <div style="margin-top:18px;">
+    <div class="color-row">
+      <label>Grid Color:</label>
+      <input type="color" id="gridColor" value="#ff0000" />
+      <label style="margin-left:16px;">Grid Opacity:</label>
+      <input type="range" id="gridOpacity" min="0.05" max="1" step="0.05" value="0.7" style="width:120px; accent-color:#6060ff;" />
+      <span id="opacityVal" style="font-size:0.85rem;color:#888;">0.7</span>
+    </div>
+    <div class="grid-label-toggle">
+      <input type="checkbox" id="showLabels" checked />
+      <label for="showLabels">Show grid cell labels (A1, B2 …)</label>
+    </div>
+  </div>
+
+  <div class="btn-row" style="margin-top:20px;">
+    <button class="btn-primary" id="processBtn">Apply & Preview</button>
+    <button class="btn-secondary" id="resetBtn">Reset</button>
+  </div>
+</div>
+
+<!-- Step 3: Output -->
+<div class="card hidden" id="outputCard">
+  <h2>Step 3 — Result</h2>
+  <div class="canvas-wrapper">
+    <canvas id="outputCanvas"></canvas>
+  </div>
+  <div class="btn-row" style="margin-top:16px;">
+    <button class="btn-success" id="downloadBtn">⬇ Download Image</button>
+  </div>
+</div>
+
+<script>
+  const uploadZone = document.getElementById('uploadZone');
+  const fileInput  = document.getElementById('fileInput');
+  const adjustCard = document.getElementById('adjustCard');
+  const outputCard = document.getElementById('outputCard');
+  const outputCanvas = document.getElementById('outputCanvas');
+  const ctx = outputCanvas.getContext('2d');
+
+  const contrastSlider  = document.getElementById('contrastSlider');
+  const brightnessSlider = document.getElementById('brightnessSlider');
+  const gridColsInput   = document.getElementById('gridCols');
+  const gridRowsInput   = document.getElementById('gridRows');
+  const gridColorInput  = document.getElementById('gridColor');
+  const gridOpacityInput = document.getElementById('gridOpacity');
+  const showLabels      = document.getElementById('showLabels');
+  const processBtn      = document.getElementById('processBtn');
+  const resetBtn        = document.getElementById('resetBtn');
+  const downloadBtn     = document.getElementById('downloadBtn');
+
+  let originalImage = null;
+
+  // Live display updates
+  contrastSlider.addEventListener('input', () => {
+    document.getElementById('contrastVal').textContent = contrastSlider.value;
+  });
+  brightnessSlider.addEventListener('input', () => {
+    document.getElementById('brightnessVal').textContent = brightnessSlider.value;
+  });
+  gridOpacityInput.addEventListener('input', () => {
+    document.getElementById('opacityVal').textContent = parseFloat(gridOpacityInput.value).toFixed(2);
+  });
+
+  // Upload zone
+  uploadZone.addEventListener('click', () => fileInput.click());
+
+  uploadZone.addEventListener('dragover', e => {
+    e.preventDefault();
+    uploadZone.classList.add('drag-over');
+  });
+  uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
+  uploadZone.addEventListener('drop', e => {
+    e.preventDefault();
+    uploadZone.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) loadImage(file);
+  });
+
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files[0]) loadImage(fileInput.files[0]);
+  });
+
+  function loadImage(file) {
+    document.getElementById('filename-display').textContent = '✔ ' + file.name;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        originalImage = img;
+        adjustCard.classList.remove('hidden');
+        outputCard.classList.add('hidden');
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  processBtn.addEventListener('click', applyProcessing);
+  resetBtn.addEventListener('click', () => {
+    contrastSlider.value = 150;
+    brightnessSlider.value = 100;
+    document.getElementById('contrastVal').textContent = 150;
+    document.getElementById('brightnessVal').textContent = 100;
+    gridColsInput.value = 10;
+    gridRowsInput.value = 10;
+    gridColorInput.value = '#ff0000';
+    gridOpacityInput.value = 0.7;
+    document.getElementById('opacityVal').textContent = '0.70';
+    outputCard.classList.add('hidden');
+  });
+
+  function applyProcessing() {
+    if (!originalImage) return;
+
+    const cols = Math.max(1, Math.min(100, parseInt(gridColsInput.value) || 10));
+    const rows = Math.max(1, Math.min(100, parseInt(gridRowsInput.value) || 10));
+    const contrast   = parseInt(contrastSlider.value) / 100;
+    const brightness = parseInt(brightnessSlider.value) / 100;
+
+    const W = originalImage.naturalWidth;
+    const H = originalImage.naturalHeight;
+
+    outputCanvas.width  = W;
+    outputCanvas.height = H;
+
+    // Draw original to get pixel data
+    ctx.drawImage(originalImage, 0, 0, W, H);
+    const imageData = ctx.getImageData(0, 0, W, H);
+    const data = imageData.data;
+
+    // Convert to B&W + apply contrast + brightness
+    const factor = (259 * (contrast * 255 - 255)) / (255 * (259 - (contrast * 255 - 255)));
+
+    for (let i = 0; i < data.length; i += 4) {
+      // Grayscale
+      const gray = 0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2];
+
+      // Brightness
+      let v = gray * brightness;
+
+      // Contrast (standard formula)
+      v = factor * (v - 128) + 128;
+      v = Math.min(255, Math.max(0, v));
+
+      data[i] = data[i+1] = data[i+2] = v;
+    }
+
+    ctx.putImageData(imageData, 0, 0);
+
+    // Draw grid
+    const cellW = W / cols;
+    const cellH = H / rows;
+    const gridHex = gridColorInput.value;
+    const opacity = parseFloat(gridOpacityInput.value);
+
+    ctx.save();
+    ctx.globalAlpha = opacity;
+    ctx.strokeStyle = gridHex;
+    ctx.lineWidth = Math.max(1, Math.min(W, H) / 400);
+
+    // Vertical lines
+    for (let c = 0; c <= cols; c++) {
+      ctx.beginPath();
+      ctx.moveTo(c * cellW, 0);
+      ctx.lineTo(c * cellW, H);
+      ctx.stroke();
+    }
+    // Horizontal lines
+    for (let r = 0; r <= rows; r++) {
+      ctx.beginPath();
+      ctx.moveTo(0, r * cellH);
+      ctx.lineTo(W, r * cellH);
+      ctx.stroke();
+    }
+
+    // Labels
+    if (showLabels.checked) {
+      const fontSize = Math.max(8, Math.min(cellW, cellH) * 0.22);
+      ctx.font = `bold ${fontSize}px monospace`;
+      ctx.fillStyle = gridHex;
+      ctx.textBaseline = 'top';
+
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const colLabel = colName(c);
+          const label = colLabel + (r + 1);
+          ctx.fillText(label, c * cellW + 3, r * cellH + 2);
+        }
+      }
+    }
+
+    ctx.restore();
+
+    outputCard.classList.remove('hidden');
+    outputCard.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function colName(index) {
+    let name = '';
+    let i = index;
+    do {
+      name = String.fromCharCode(65 + (i % 26)) + name;
+      i = Math.floor(i / 26) - 1;
+    } while (i >= 0);
+    return name;
+  }
+
+  downloadBtn.addEventListener('click', () => {
+    const link = document.createElement('a');
+    link.download = 'grid-drawing-reference.png';
+    link.href = outputCanvas.toDataURL('image/png');
+    link.click();
+  });
+</script>
+</body>
+</html>

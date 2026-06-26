@@ -1,0 +1,72 @@
+====================================================
+  Drawing Grid App — Reference Tool for Artists
+====================================================
+
+WHAT IS THIS APP?
+-----------------
+Drawing Grid App is a browser-based image processing tool designed to
+help artists and illustrators create accurate grid-based drawings.
+
+It takes any photo or image and:
+  1. Converts it to Black & White (grayscale)
+  2. Applies adjustable Contrast (50% to 400%)
+  3. Applies adjustable Brightness (30% to 300%)
+  4. Overlays a customizable reference grid (rows x columns)
+  5. Labels each cell (A1, B2, C3 ...) for easy reference
+  6. Lets you download the final processed image as PNG
+
+This is especially useful for the "grid method" — a classic technique
+where artists divide a reference image into a grid and replicate each
+cell on paper to achieve accurate proportions.
+
+
+HOW TO OPEN IN A WEB BROWSER
+-----------------------------
+This is a fully static HTML app — no installation or internet needed.
+
+  Option 1 (Easiest):
+    - Open File Explorer
+    - Navigate to this folder: drawing app/
+    - Double-click  index.html
+    - It will open in your default browser automatically
+
+  Option 2 (Drag & Drop):
+    - Open your browser (Chrome, Edge, Firefox, etc.)
+    - Drag the file  index.html  into the browser window
+
+  Option 3 (Address Bar):
+    - Open your browser
+    - In the address bar type:
+        file:///C:/Users/2361793/claude local/drawing app/index.html
+    - Press Enter
+
+
+HOW TO USE
+----------
+  Step 1 — Upload:   Click the upload zone or drag & drop your image
+  Step 2 — Adjust:   Use sliders to set Contrast and Brightness
+  Step 3 — Grid:     Enter the number of Columns and Rows you want
+  Step 4 — Style:    Choose grid line color and opacity
+  Step 5 — Labels:   Toggle A1/B2 cell labels on or off
+  Step 6 — Apply:    Click "Apply & Preview" to process the image
+  Step 7 — Download: Click "Download Image" to save the result as PNG
+
+
+SUPPORTED IMAGE FORMATS
+------------------------
+  PNG, JPG / JPEG, WEBP, BMP
+
+
+TECHNICAL NOTES
+---------------
+  - Built with plain HTML, CSS, and vanilla JavaScript
+  - Uses the HTML5 Canvas API for image processing
+  - No frameworks, no dependencies, no internet required
+  - All processing happens locally in your browser (privacy-safe)
+  - File: index.html
+
+
+====================================================
+  Created by: Roja Rajan
+  Tool: Claude Code
+====================================================
